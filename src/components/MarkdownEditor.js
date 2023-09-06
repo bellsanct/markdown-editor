@@ -14,6 +14,7 @@ const editorStyle = {
 };
 
 const previewStyle = {
+  overflowY: 'auto',
   color: '#333',
   backgroundcolor: '#f8f8f8',
   border: '1px solid #000',
@@ -87,7 +88,6 @@ function MarkdownEditor() {
       URL.revokeObjectURL(url);
     }
   };
-
 
   return (
     <Container>
