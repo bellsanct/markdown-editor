@@ -2,6 +2,29 @@ import React, { useState } from "react";
 import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
 import { marked } from "marked";
 
+const editorStyle = {
+  color: '#333',
+  backgroundcolor: '#f8f8f8',
+  border: '1px solid #ccc',
+  padding: '10px',
+  width: '50%',
+  float: 'left',
+  height: '90vh',
+  resize: 'none' 
+};
+
+const previewStyle = {
+  overflowY: 'auto',
+  color: '#333',
+  backgroundcolor: '#f8f8f8',
+  border: '1px solid #000',
+  padding: '10px',
+  width: '50%',
+  float: 'right',
+  height: '90vh',
+  resize: 'none' 
+};
+
 function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
   const [existingMarkdown, setExistingMarkdown] = useState(""); // 既存のMarkdown
@@ -66,27 +89,25 @@ function MarkdownEditor() {
     }
   };
 
-
   return (
     <Container>
       <Navbar bg="light">
         <Navbar.Brand>Markdown editor</Navbar.Brand>
         <Nav className="ml-auto">
-          <Nav.Item>
-            <Button variant="primary">Click Me</Button>
-          </Nav.Item>
+	  <button className="btn btn-primary mx-2" onClick={handleLoadMarkdown}>読込</button>
+          <button className="btn btn-success mx-2" onClick={handleSaveMarkdown}>保存</button>
         </Nav>
       </Navbar>
       <div className="markdown-editor">
-        <button onClick={handleLoadMarkdown}>読込</button>
-        <button onClick={handleSaveMarkdown}>保存</button>
         <textarea
+	  style={editorStyle}
           className="editor"
           value={markdown}
           onChange={(e) => setMarkdown(e.target.value)}
         ></textarea>
         <div
           className="preview"
+	  style={previewStyle}
           dangerouslySetInnerHTML={{ __html: marked(markdown) }}
         ></div>
       </div>
