@@ -1,6 +1,7 @@
 import React, { useState , useRef } from "react";
 import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
 import { marked } from "marked";
+import "./scrollbar.css";
 import previewStyles from "./preview.css"
 
 const editorStyle = {
