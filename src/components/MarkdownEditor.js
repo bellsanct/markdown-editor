@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
 import { marked } from "marked";
-
+import previewStyles from "./preview.css"
 
 const editorStyle = {
   color: '#333',
