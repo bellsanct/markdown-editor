@@ -90,7 +90,7 @@ function MarkdownEditor() {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <Navbar bg="light">
         <Navbar.Brand>Markdown editor</Navbar.Brand>
         <Nav className="ml-auto">
