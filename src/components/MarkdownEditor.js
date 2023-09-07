@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useRef } from "react";
 import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
 import { marked } from "marked";
 import previewStyles from "./preview.css"
@@ -30,6 +30,18 @@ function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
   const [existingMarkdown, setExistingMarkdown] = useState(""); // 既存のMarkdown
   const [editedMarkdown, setEditedMarkdown] = useState("");   
+  const editorRef = useRef(null);
+  const previewRef = useRef(null);
+
+  const handleEditorScroll = () => {
+    const scrollTop = editorRef.current.scrollTop;
+    previewRef.current.scrollTop = scrollTop;
+  };
+
+  const handlePreviewScroll = () => {
+    const scrollTop = previewRef.current.scrollTop;
+    editorRef.current.scrollTop = scrollTop;
+  };
 
   const handleLoadMarkdown = () => {
     const fileInput = document.createElement("input");
@@ -101,12 +113,16 @@ function MarkdownEditor() {
       </Navbar>
       <div className="markdown-editor">
         <textarea
+	  ref={editorRef}
+	  onScroll={handleEditorScroll}
 	  style={editorStyle}
           className="editor"
           value={markdown}
           onChange={(e) => setMarkdown(e.target.value)}
         ></textarea>
         <div
+	  ref={previewRef}
+	  onScroll={handlePreviewScroll}
           className="preview"
 	  style={previewStyle}
           dangerouslySetInnerHTML={{ __html: marked(markdown) }}
