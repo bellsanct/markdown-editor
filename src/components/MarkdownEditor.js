@@ -1,11 +1,13 @@
-import React, { useState , useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
 import { marked } from "marked";
 import "./scrollbar.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
 import previewStyles from "./preview.css"
 
 const editorStyle = {
-  color: '#333',
+  //color: '#333',
   backgroundcolor: '#f8f8f8',
   border: '1px solid #ccc',
   padding: '10px',
@@ -17,7 +19,7 @@ const editorStyle = {
 
 const previewStyle = {
   overflowY: 'auto',
-  color: '#333',
+  //color: '#333',
   backgroundcolor: '#f8f8f8',
   border: '1px solid #000',
   padding: '10px',
@@ -103,6 +105,11 @@ function MarkdownEditor() {
     }
   };
 
+  useEffect(() => {
+    // コンポーネントがマウントされた際にhighlight.jsを初期化
+    hljs.highlightAll();
+  }, [markdown]);
+	
   return (
     <Container fluid>
       <Navbar bg="light">
