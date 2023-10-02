@@ -24,6 +24,24 @@
   margin-bottom: 10px;
 }
 
+.preview h4 {
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.preview h5 {
+  font-size: 14px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.preview h6 {
+  font-size: 12px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
 .preview p {
   margin-top: 10px;
   margin-bottom: 10px;
