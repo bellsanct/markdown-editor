@@ -1,0 +1,23 @@
+/* 行番号コンテナ */
+.line-numbers {
+  float: left;
+  display: inline-block;
+  width: 30px; /* 行番号の幅 */
+  text-align: right;
+  padding-right: 10px;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ccc;
+}
+
+/* 行番号 */
+.line-numbers span {
+  display: block;
+  padding: 5px 0;
+}
+
+/* カーソル行のハイライト */
+.editor:focus + .line-numbers span {
+  background-color: #64b5f6;
+  color: #fff;
+}
+
