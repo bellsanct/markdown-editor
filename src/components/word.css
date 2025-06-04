@@ -1,0 +1,14 @@
+.word-template {
+  font-family: 'Times New Roman', 'Serif';
+  line-height: 1.6;
+}
+
+.word-template table {
+  border-collapse: collapse;
+}
+
+.word-template th,
+.word-template td {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+}

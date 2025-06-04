@@ -1,0 +1,19 @@
+.simple-template {
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  line-height: 1.4;
+}
+
+.simple-template pre {
+  background-color: #1e1e1e;
+  color: #dcdcdc;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.simple-template code {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  padding: 2px 4px;
+  border-radius: 4px;
+}

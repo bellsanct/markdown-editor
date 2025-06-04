@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button, Navbar, Nav, Container, Row, Col, Form } from "react-bootstrap";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import SaveIcon from "@mui/icons-material/Save";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { marked } from "marked";
 import "./scrollbar.css";
 import hljs from "highlight.js";
@@ -7,6 +13,8 @@ import "highlight.js/styles/github.css";
 import "./preview.css";
 import "github-markdown-css/github-markdown-light.css";
 import "./theme.css";
+import "./simple.css";
+import "./word.css";
 
 
 function MarkdownEditor() {
@@ -14,7 +22,8 @@ function MarkdownEditor() {
   const [existingMarkdown, setExistingMarkdown] = useState("");
   const [editedMarkdown, setEditedMarkdown] = useState("");
   const [theme, setTheme] = useState("light");
-  const [template, setTemplate] = useState("default");
+  const [template, setTemplate] = useState("github");
+  const [showPreview, setShowPreview] = useState(true);
   const editorRef = useRef(null);
   const previewRef = useRef(null);
 
@@ -55,6 +64,10 @@ function MarkdownEditor() {
     });
 
     fileInput.click();
+  };
+
+  const togglePreview = () => {
+    setShowPreview(!showPreview);
   };
 
   const handleSaveMarkdown = () => {
@@ -107,22 +120,23 @@ function MarkdownEditor() {
             onChange={(e) => setTemplate(e.target.value)}
             className="mx-2"
           >
-            <option value="default">Default</option>
             <option value="github">GitHub</option>
+            <option value="simple">Simple</option>
+            <option value="word">Word</option>
           </Form.Select>
           <Button variant="secondary" className="mx-2" onClick={toggleTheme}>
-            {theme === "light" ? "Dark" : "Light"}
+            {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
           </Button>
           <Button className="mx-2" onClick={handleLoadMarkdown} variant="primary">
-            読込
+            <FolderOpenIcon />
           </Button>
           <Button className="mx-2" onClick={handleSaveMarkdown} variant="success">
-            保存
+            <SaveIcon />
           </Button>
         </Nav>
       </Navbar>
-      <Row className="mt-2">
-        <Col md={6} className="p-0">
+      <Row className="mt-2 position-relative">
+        <Col md={showPreview ? 6 : 12} className="p-0">
           <Form.Control
             as="textarea"
             placeholder="Enter markdown here..."
@@ -133,14 +147,42 @@ function MarkdownEditor() {
             onChange={(e) => setMarkdown(e.target.value)}
           />
         </Col>
-        <Col md={6} className="p-0">
-          <div
-            ref={previewRef}
-            onScroll={handlePreviewScroll}
-            className={`preview ${template === "github" ? "markdown-body" : ""}`}
-            dangerouslySetInnerHTML={{ __html: marked(markdown) }}
-          ></div>
-        </Col>
+        {showPreview && (
+          <Col md={6} className="p-0 position-relative">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={togglePreview}
+              className="toggle-preview-btn"
+            >
+              <ChevronLeftIcon />
+            </Button>
+            <div
+              ref={previewRef}
+              onScroll={handlePreviewScroll}
+              className={`preview ${
+                template === "github"
+                  ? "markdown-body"
+                  : template === "simple"
+                  ? "simple-template"
+                  : template === "word"
+                  ? "word-template"
+                  : ""
+              }`}
+              dangerouslySetInnerHTML={{ __html: marked(markdown) }}
+            ></div>
+          </Col>
+        )}
+        {!showPreview && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={togglePreview}
+            className="toggle-preview-btn"
+          >
+            <ChevronRightIcon />
+          </Button>
+        )}
       </Row>
     </Container>
   );
