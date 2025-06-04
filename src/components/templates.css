@@ -1,0 +1,18 @@
+/* Additional templates */
+
+.simple-template {
+  font-family: "Courier New", monospace;
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 10px;
+}
+
+.word-template {
+  font-family: "Times New Roman", serif;
+  background-color: #ffffff;
+  color: #000;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  border: 1px solid #e0e0e0;
+}
