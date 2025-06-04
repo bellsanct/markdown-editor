@@ -1,40 +1,39 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
+import { Button, Navbar, Nav, Container, Form } from "react-bootstrap";
+import SaveIcon from "@mui/icons-material/Save";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { marked } from "marked";
 import "./scrollbar.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
-import previewStyles from "./preview.css"
+import "./preview.css";
+import "github-markdown-css/github-markdown-light.css";
+import "github-markdown-css/github-markdown-dark.css";
+import "./theme.css";
+import "./sidebar.css";
 
-const editorStyle = {
-  //color: '#333',
-  backgroundcolor: '#f8f8f8',
-  border: '1px solid #ccc',
-  padding: '10px',
-  width: '50%',
-  float: 'left',
-  height: '90vh',
-  resize: 'none' 
-};
-
-const previewStyle = {
-  overflowY: 'auto',
-  //color: '#333',
-  backgroundcolor: '#f8f8f8',
-  border: '1px solid #000',
-  padding: '10px',
-  width: '50%',
-  float: 'right',
-  height: '90vh',
-  resize: 'none' 
-};
 
 function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
-  const [existingMarkdown, setExistingMarkdown] = useState(""); // 既存のMarkdown
-  const [editedMarkdown, setEditedMarkdown] = useState("");   
+  const [existingMarkdown, setExistingMarkdown] = useState("");
+  const [editedMarkdown, setEditedMarkdown] = useState("");
+  const [theme, setTheme] = useState("light");
+  const [template, setTemplate] = useState("github");
+  const [collapsed, setCollapsed] = useState(false);
   const editorRef = useRef(null);
   const previewRef = useRef(null);
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const togglePreview = () => {
+    setCollapsed(!collapsed);
+  };
 
   const handleEditorScroll = () => {
     const scrollTop = editorRef.current.scrollTop;
@@ -110,31 +109,70 @@ function MarkdownEditor() {
     hljs.highlightAll();
   }, [markdown]);
 	
+  const templateClass =
+    template === "github"
+      ? "markdown-body"
+      : template === "simple"
+      ? "simple-preview"
+      : "word-preview";
+
   return (
-    <Container fluid>
-      <Navbar bg="light">
+    <Container fluid className={theme}>
+      <Navbar bg={theme} variant={theme}>
         <Navbar.Brand>Markdown editor</Navbar.Brand>
-        <Nav className="ml-auto">
-	  <button className="btn btn-primary mx-2" onClick={handleLoadMarkdown}>読込</button>
-          <button className="btn btn-success mx-2" onClick={handleSaveMarkdown}>保存</button>
+        <Nav className="ms-auto align-items-center">
+          <Form.Select
+            size="sm"
+            value={template}
+            onChange={(e) => setTemplate(e.target.value)}
+            className="mx-2"
+          >
+            <option value="github">GitHub</option>
+            <option value="simple">Simple</option>
+            <option value="word">Word</option>
+          </Form.Select>
+          <Button variant="secondary" className="mx-2" onClick={toggleTheme}>
+            {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+          </Button>
+          <Button
+            className="mx-2"
+            onClick={handleLoadMarkdown}
+            variant="primary"
+          >
+            <FolderOpenIcon />
+          </Button>
+          <Button
+            className="mx-2"
+            onClick={handleSaveMarkdown}
+            variant="success"
+          >
+            <SaveIcon />
+          </Button>
         </Nav>
       </Navbar>
-      <div className="markdown-editor">
-        <textarea
-	  ref={editorRef}
-	  onScroll={handleEditorScroll}
-	  style={editorStyle}
-          className="editor"
-          value={markdown}
-          onChange={(e) => setMarkdown(e.target.value)}
-        ></textarea>
-        <div
-	  ref={previewRef}
-	  onScroll={handlePreviewScroll}
-          className="preview"
-	  style={previewStyle}
-          dangerouslySetInnerHTML={{ __html: marked(markdown) }}
-        ></div>
+      <div className="editor-container mt-2">
+        <div className="editor-area">
+          <Form.Control
+            as="textarea"
+            placeholder="Enter markdown here..."
+            ref={editorRef}
+            onScroll={handleEditorScroll}
+            className="editor"
+            value={markdown}
+            onChange={(e) => setMarkdown(e.target.value)}
+          />
+        </div>
+        <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+          <button className="sidebar-toggle" onClick={togglePreview}>
+            {collapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </button>
+          <div
+            ref={previewRef}
+            onScroll={handlePreviewScroll}
+            className={`preview ${templateClass}`}
+            dangerouslySetInnerHTML={{ __html: marked(markdown) }}
+          ></div>
+        </div>
       </div>
     </Container>
   );
