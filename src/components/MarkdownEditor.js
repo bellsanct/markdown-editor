@@ -7,6 +7,15 @@ import "highlight.js/styles/github.css";
 import "./preview.css";
 import "github-markdown-css/github-markdown-light.css";
 import "./theme.css";
+import "./line.css";
+import "./templates.css";
+
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import SaveIcon from "@mui/icons-material/Save";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 
 function MarkdownEditor() {
@@ -14,9 +23,12 @@ function MarkdownEditor() {
   const [existingMarkdown, setExistingMarkdown] = useState("");
   const [editedMarkdown, setEditedMarkdown] = useState("");
   const [theme, setTheme] = useState("light");
-  const [template, setTemplate] = useState("default");
+  const [template, setTemplate] = useState("github");
+  const [previewVisible, setPreviewVisible] = useState(true);
+  const [lineNumbers, setLineNumbers] = useState([]);
   const editorRef = useRef(null);
   const previewRef = useRef(null);
+  const lineNumberRef = useRef(null);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -25,11 +37,13 @@ function MarkdownEditor() {
   const handleEditorScroll = () => {
     const scrollTop = editorRef.current.scrollTop;
     previewRef.current.scrollTop = scrollTop;
+    lineNumberRef.current.scrollTop = scrollTop;
   };
 
   const handlePreviewScroll = () => {
     const scrollTop = previewRef.current.scrollTop;
     editorRef.current.scrollTop = scrollTop;
+    lineNumberRef.current.scrollTop = scrollTop;
   };
 
   const handleLoadMarkdown = () => {
@@ -92,6 +106,11 @@ function MarkdownEditor() {
   };
 
   useEffect(() => {
+    const lines = markdown.split("\n").length || 1;
+    setLineNumbers(Array.from({ length: lines }, (_, i) => i + 1));
+  }, [markdown]);
+
+  useEffect(() => {
     // コンポーネントがマウントされた際にhighlight.jsを初期化
     hljs.highlightAll();
   }, [markdown]);
@@ -107,40 +126,63 @@ function MarkdownEditor() {
             onChange={(e) => setTemplate(e.target.value)}
             className="mx-2"
           >
-            <option value="default">Default</option>
             <option value="github">GitHub</option>
+            <option value="simple">Simple</option>
+            <option value="word">Word</option>
           </Form.Select>
           <Button variant="secondary" className="mx-2" onClick={toggleTheme}>
-            {theme === "light" ? "Dark" : "Light"}
+            {theme === "light" ? <Brightness4Icon /> : <Brightness7Icon />}
           </Button>
           <Button className="mx-2" onClick={handleLoadMarkdown} variant="primary">
-            読込
+            <FolderOpenIcon />
           </Button>
           <Button className="mx-2" onClick={handleSaveMarkdown} variant="success">
-            保存
+            <SaveIcon />
+          </Button>
+          <Button
+            className="mx-2"
+            onClick={() => setPreviewVisible(!previewVisible)}
+            variant="info"
+          >
+            {previewVisible ? <VisibilityOffIcon /> : <VisibilityIcon />}
           </Button>
         </Nav>
       </Navbar>
       <Row className="mt-2">
-        <Col md={6} className="p-0">
-          <Form.Control
-            as="textarea"
-            placeholder="Enter markdown here..."
-            ref={editorRef}
-            onScroll={handleEditorScroll}
-            className="editor"
-            value={markdown}
-            onChange={(e) => setMarkdown(e.target.value)}
-          />
+        <Col md={previewVisible ? 6 : 12} className="p-0">
+          <div className="editor-container">
+            <div ref={lineNumberRef} className="line-numbers">
+              {lineNumbers.map((n) => (
+                <span key={n}>{n}</span>
+              ))}
+            </div>
+            <Form.Control
+              as="textarea"
+              placeholder="Enter markdown here..."
+              ref={editorRef}
+              onScroll={handleEditorScroll}
+              className="editor"
+              value={markdown}
+              onChange={(e) => setMarkdown(e.target.value)}
+            />
+          </div>
         </Col>
-        <Col md={6} className="p-0">
-          <div
-            ref={previewRef}
-            onScroll={handlePreviewScroll}
-            className={`preview ${template === "github" ? "markdown-body" : ""}`}
-            dangerouslySetInnerHTML={{ __html: marked(markdown) }}
-          ></div>
-        </Col>
+        {previewVisible && (
+          <Col md={6} className="p-0 sidebar">
+            <div
+              ref={previewRef}
+              onScroll={handlePreviewScroll}
+              className={`preview ${
+                template === "github"
+                  ? "markdown-body"
+                  : template === "simple"
+                  ? "simple-template"
+                  : "word-template"
+              }`}
+              dangerouslySetInnerHTML={{ __html: marked(markdown) }}
+            ></div>
+          </Col>
+        )}
       </Row>
     </Container>
   );

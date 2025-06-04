@@ -21,3 +21,16 @@
   color: #fff;
 }
 
+.editor-container {
+  display: flex;
+}
+
+.editor-container .line-numbers {
+  overflow: hidden;
+  user-select: none;
+}
+
+.editor-container .editor {
+  flex: 1;
+}
+
