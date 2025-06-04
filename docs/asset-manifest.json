@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/markdown-editor/static/css/main.535102cf.css",
+    "main.js": "/markdown-editor/static/js/main.2c6d1778.js",
+    "static/js/453.3c55fb4b.chunk.js": "/markdown-editor/static/js/453.3c55fb4b.chunk.js",
+    "index.html": "/markdown-editor/index.html",
+    "main.535102cf.css.map": "/markdown-editor/static/css/main.535102cf.css.map",
+    "main.2c6d1778.js.map": "/markdown-editor/static/js/main.2c6d1778.js.map",
+    "453.3c55fb4b.chunk.js.map": "/markdown-editor/static/js/453.3c55fb4b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.535102cf.css",
+    "static/js/main.2c6d1778.js"
+  ]
+}
