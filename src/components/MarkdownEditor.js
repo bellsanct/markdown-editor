@@ -1,40 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Navbar, Nav, Container, Row, Col } from "react-bootstrap"
+import { Button, Navbar, Nav, Container, Row, Col, Form } from "react-bootstrap";
 import { marked } from "marked";
 import "./scrollbar.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
-import previewStyles from "./preview.css"
+import "./preview.css";
+import "github-markdown-css/github-markdown-light.css";
+import "./theme.css";
 
-const editorStyle = {
-  //color: '#333',
-  backgroundcolor: '#f8f8f8',
-  border: '1px solid #ccc',
-  padding: '10px',
-  width: '50%',
-  float: 'left',
-  height: '90vh',
-  resize: 'none' 
-};
-
-const previewStyle = {
-  overflowY: 'auto',
-  //color: '#333',
-  backgroundcolor: '#f8f8f8',
-  border: '1px solid #000',
-  padding: '10px',
-  width: '50%',
-  float: 'right',
-  height: '90vh',
-  resize: 'none' 
-};
 
 function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
-  const [existingMarkdown, setExistingMarkdown] = useState(""); // 既存のMarkdown
-  const [editedMarkdown, setEditedMarkdown] = useState("");   
+  const [existingMarkdown, setExistingMarkdown] = useState("");
+  const [editedMarkdown, setEditedMarkdown] = useState("");
+  const [theme, setTheme] = useState("light");
+  const [template, setTemplate] = useState("default");
   const editorRef = useRef(null);
   const previewRef = useRef(null);
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   const handleEditorScroll = () => {
     const scrollTop = editorRef.current.scrollTop;
@@ -111,31 +97,51 @@ function MarkdownEditor() {
   }, [markdown]);
 	
   return (
-    <Container fluid>
-      <Navbar bg="light">
+    <Container fluid className={theme}>
+      <Navbar bg={theme} variant={theme}>
         <Navbar.Brand>Markdown editor</Navbar.Brand>
-        <Nav className="ml-auto">
-	  <button className="btn btn-primary mx-2" onClick={handleLoadMarkdown}>読込</button>
-          <button className="btn btn-success mx-2" onClick={handleSaveMarkdown}>保存</button>
+        <Nav className="ms-auto align-items-center">
+          <Form.Select
+            size="sm"
+            value={template}
+            onChange={(e) => setTemplate(e.target.value)}
+            className="mx-2"
+          >
+            <option value="default">Default</option>
+            <option value="github">GitHub</option>
+          </Form.Select>
+          <Button variant="secondary" className="mx-2" onClick={toggleTheme}>
+            {theme === "light" ? "Dark" : "Light"}
+          </Button>
+          <Button className="mx-2" onClick={handleLoadMarkdown} variant="primary">
+            読込
+          </Button>
+          <Button className="mx-2" onClick={handleSaveMarkdown} variant="success">
+            保存
+          </Button>
         </Nav>
       </Navbar>
-      <div className="markdown-editor">
-        <textarea
-	  ref={editorRef}
-	  onScroll={handleEditorScroll}
-	  style={editorStyle}
-          className="editor"
-          value={markdown}
-          onChange={(e) => setMarkdown(e.target.value)}
-        ></textarea>
-        <div
-	  ref={previewRef}
-	  onScroll={handlePreviewScroll}
-          className="preview"
-	  style={previewStyle}
-          dangerouslySetInnerHTML={{ __html: marked(markdown) }}
-        ></div>
-      </div>
+      <Row className="mt-2">
+        <Col md={6} className="p-0">
+          <Form.Control
+            as="textarea"
+            placeholder="Enter markdown here..."
+            ref={editorRef}
+            onScroll={handleEditorScroll}
+            className="editor"
+            value={markdown}
+            onChange={(e) => setMarkdown(e.target.value)}
+          />
+        </Col>
+        <Col md={6} className="p-0">
+          <div
+            ref={previewRef}
+            onScroll={handlePreviewScroll}
+            className={`preview ${template === "github" ? "markdown-body" : ""}`}
+            dangerouslySetInnerHTML={{ __html: marked(markdown) }}
+          ></div>
+        </Col>
+      </Row>
     </Container>
   );
 }
